@@ -27,10 +27,14 @@ jobs:
           cache: pnpm
       - name: 安装锁定依赖
         run: pnpm install --frozen-lockfile
-      - name: 核对项目关联与需求登记
-        run: pnpm test:project
+      - name: 核对工程配置与需求登记
+        run: |
+          node --test scripts/check-project.test.mjs
+          pnpm test:project
       - name: Lint
-        run: pnpm lint
+        run: |
+          pnpm lint
+          pnpm exec eslint scripts/check-project.test.mjs
       - name: 类型检查
         run: pnpm typecheck
       - name: 生产构建

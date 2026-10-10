@@ -37,7 +37,7 @@ docs/
 
 构建与检查：`pnpm lint`、`pnpm typecheck`、`pnpm build`、`pnpm test:smoke`、`pnpm check`。更详细的启动、端口和包边界说明见 [monorepo 设计](docs/design/monorepo.md)。
 
-`pnpm test:project` 检查本人项目、origin 和两份需求登记是否一致。GitHub Actions 在 main、codex 分支推送及面向 main 的 PR 上运行，job 名称为 `harness-check`；依次执行项目核对、lint、类型检查、真实构建、HTTP 冒烟及 DeliveryGuard 检查，任一步失败都会令检查失败，并在摘要记录事件 SHA。PR 事件 SHA 对应 GitHub 测试合并提交，push 事件对应推送提交。
+`pnpm test:project` 检查已提交的工程配置、origin 仓库名、平台项目编号和两份需求登记是否一致，不读取 `.book`。`node scripts/check-project.mjs --local` 额外校验本地 `.book/project.json` 中的本人身份、项目、站点和完整仓库关联；本次 `.book` 修改保留在本地，不提交。既定 package.json 指令保持已提交内容，workflow 直接执行 `node --test scripts/check-project.test.mjs` 运行回归检查。GitHub Actions 在 main、codex 分支推送及面向 main 的 PR 上运行，job 名称为 `harness-check`；依次执行工程配置核对、lint、类型检查、真实构建、HTTP 冒烟及 DeliveryGuard 检查，任一步失败都会令检查失败，并在摘要记录事件 SHA。PR 事件 SHA 对应 GitHub 测试合并提交，push 事件对应推送提交。
 
 本人仓库为 [Pozhan-js/ximi-pintuan](https://github.com/Pozhan-js/ximi-pintuan)，项目关联已写入配置；仓库私有性、平台审核、预览部署和验收各自需要真实证据。工程 CI 不代替平台审批门禁。任务验收矩阵与限制见 [任务 01 核对表](docs/task-01-status.md)。
 
