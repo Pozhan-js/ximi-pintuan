@@ -1,0 +1,44 @@
+name: harness-check
+
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  harness-check:
+    name: harness-check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: 安装锁定依赖
+        run: pnpm install --frozen-lockfile
+      - name: 核对项目关联与需求登记
+        run: pnpm test:project
+      - name: Lint
+        run: pnpm lint
+      - name: 类型检查
+        run: pnpm typecheck
+      - name: 生产构建
+        run: pnpm build
+      - name: HTTP 冒烟测试
+        run: pnpm test:smoke
+      - name: DeliveryGuard 检查
+        run: pnpm check
+      - name: 记录检查提交
+        if: always()
+        run: printf '检查提交 SHA：`%s`\n' "$GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"

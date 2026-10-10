@@ -1,0 +1,24 @@
+{
+  "project": "8f0ba336-c0bb-4972-8aff-205990c17e4e",
+  "currentVersion": "v1.0.0",
+  "versions": [
+    {
+      "version": "v1.0.0",
+      "documents": [
+        {
+          "title": "拼团哇｜产品总文档",
+          "type": "product-requirement",
+          "url": "https://my.feishu.cn/docx/QKjbdlKe7o5j53xNQ6jc00ClnEf",
+          "primary": true
+        },
+        {
+          "title": "团长创建与发布拼团",
+          "type": "product-requirement",
+          "url": "https://my.feishu.cn/docx/QveDdQzFCotJ30xrivIcPhGvnoh",
+          "primary": false
+        }
+      ]
+    }
+  ],
+  "pendingChanges": []
+}

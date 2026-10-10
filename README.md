@@ -6,7 +6,7 @@
 
 ## 开始
 
-每位学员都需要先完成 [飞书 CLI 接入](docs/feishu-cli-setup.md)：安装 CLI 和官方 Skills，在飞书开放平台创建自己的应用机器人，用本人账号授权，并实际读到产品总 PRD 和 v1.0.0 需求。完成后再接任务、开始开发。
+业务实现前需要完成 [飞书 CLI 接入](docs/feishu-cli-setup.md)：配置自己的应用并以本人用户身份读取主 PRD 和版本原文。任务 01 经本人明确授权，先完成工程底座与 CI；原文读取和 fly 哥确认仍是待完成项。运行下面的工程示例无需飞书凭证。
 
 使用 Node 22.19+（22.x）或 Node 24+；推荐按 `.nvmrc` 使用 Node 22.22.2。包管理器固定为 pnpm 10.34.6。已安装该版本时可跳过 Corepack 准备：
 
@@ -37,11 +37,15 @@ docs/
 
 构建与检查：`pnpm lint`、`pnpm typecheck`、`pnpm build`、`pnpm test:smoke`、`pnpm check`。更详细的启动、端口和包边界说明见 [monorepo 设计](docs/design/monorepo.md)。
 
+`pnpm test:project` 检查本人项目、origin 和两份需求登记是否一致。GitHub Actions 在 main、codex 分支推送及面向 main 的 PR 上运行，job 名称为 `harness-check`；依次执行项目核对、lint、类型检查、真实构建、HTTP 冒烟及 DeliveryGuard 检查，任一步失败都会令检查失败，并在摘要记录事件 SHA。PR 事件 SHA 对应 GitHub 测试合并提交，push 事件对应推送提交。
+
+本人仓库为 [Pozhan-js/ximi-pintuan](https://github.com/Pozhan-js/ximi-pintuan)，项目关联已写入配置；仓库私有性、平台审核、预览部署和验收各自需要真实证据。工程 CI 不代替平台审批门禁。任务验收矩阵与限制见 [任务 01 核对表](docs/task-01-status.md)。
+
 ## 当前边界
 
 已搭建 Next.js、Nest.js 和共享包的基础工程，已登记拼团哇 v1.0.0 产品需求，OpenSpec 为 proposed；尚无业务实现、版本验收或生产交付记录。首页和健康接口属于工程示例，HTML 属于模拟原型；check 通过仅代表登记结构有效。
 
-公开教学模板：[fly-ai-academy/pintuan-practice](https://github.com/fly-ai-academy/pintuan-practice)，默认分支 main。无需 GitHub 仓库邀请即可查看模板与 `docs/design` 中的原型。模板内容公开，学员个人实战仓库仍为私有。
+公开教学模板：[fly-ai-academy/pintuan-practice](https://github.com/fly-ai-academy/pintuan-practice)，默认分支 main。无需 GitHub 仓库邀请即可查看模板与 `docs/design` 中的原型。模板内容公开；本仓库尚需按任务要求调整为私有。
 
 学员从[课程实战路线](https://flyger.xyz/collaboration/routes)创建个人项目，连接本人 GitHub 后领取独立私有仓库。平台会自动将 `.book/project.json`、`deliveryguard.config.json` 和 `guild:connect` 中的项目编号替换为个人项目；克隆准备页提供的个人仓库地址，再运行上述 pnpm 命令。不要直接在教学模板中连接教师项目，不共用教师设备凭证。
 

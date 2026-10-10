@@ -18,13 +18,14 @@
     "start:web": "pnpm --filter @pintuan/web start",
     "start:server": "pnpm --filter @pintuan/server start",
     "typecheck": "pnpm --filter @pintuan/contracts build && pnpm -r typecheck",
-    "lint": "eslint scripts/sync-prototype.mjs scripts/smoke-monorepo.mjs eslint.config.mjs && pnpm -r lint",
+    "lint": "eslint scripts/sync-prototype.mjs scripts/smoke-monorepo.mjs scripts/check-project.mjs eslint.config.mjs && pnpm -r lint",
     "test:smoke": "node scripts/smoke-monorepo.mjs",
     "check": "deliveryguard check",
     "harness:status": "deliveryguard status",
-    "guild:connect": "node scripts/book-collaboration/cli.mjs up --site https://flyger.xyz --project ce6bed38-0ebf-4450-8b54-2ad17c38755d",
+    "guild:connect": "node scripts/book-collaboration/cli.mjs up --site https://flyger.xyz --project 8f0ba336-c0bb-4972-8aff-205990c17e4e",
     "guild:status": "node scripts/book-collaboration/cli.mjs status",
-    "guild:sync": "node scripts/book-collaboration/cli.mjs sync-sources"
+    "guild:sync": "node scripts/book-collaboration/cli.mjs sync-sources",
+    "test:project": "node scripts/check-project.mjs"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",

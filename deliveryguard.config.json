@@ -2,8 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/wzf1997/delivery-harness/main/schemas/config.schema.json",
   "schemaVersion": 1,
   "project": {
-    "id": "ce6bed38-0ebf-4450-8b54-2ad17c38755d",
-    "name": "拼团"
+    "id": "ximi-pintuan",
+    "name": "拼团实战｜从零完成全栈与 Harness 交付 · ximipintuan"
   },
   "stableBranch": "main",
   "repositories": [
