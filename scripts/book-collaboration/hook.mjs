@@ -2,9 +2,19 @@
 import { readFileSync } from 'node:fs'
 import { call } from './client.mjs'
 import { workspace, loadConfig, git, origin, branch, commitInput } from './local.mjs'
+import { createTemplateUpdater } from './updates.mjs'
+import { createBootstrap } from './bootstrap.mjs'
 
 try {
   const cwd = workspace(); const config = loadConfig(cwd); const snapshot = await call(config, 'snapshot')
+  const connection = await call(config, 'connection')
+  if (connection.kind !== 'CI') {
+    const bootstrap = createBootstrap(cwd, config), upgrade = await call(config, 'connection.upgrade.status')
+    bootstrap.acceptStatus(upgrade); bootstrap.assertReady()
+    const updater = createTemplateUpdater(cwd, config)
+    updater.acceptPolicy((await call(config, 'template.policy')).updates)
+    updater.assertReady()
+  }
   const change = snapshot.changes.find(c => c.id === config.changeId)
   if (!change) throw new Error('工作区没有绑定任务；提交门禁保持阻断')
   if (process.argv[1].endsWith('pre-commit') || process.argv[2] === 'pre-commit') {

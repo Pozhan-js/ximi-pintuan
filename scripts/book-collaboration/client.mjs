@@ -1,4 +1,5 @@
 import { createHmac, randomUUID } from 'node:crypto'
+import { connectionClientProof } from './bootstrap.mjs'
 
 export function siteUrl(value) {
   let url
@@ -10,7 +11,7 @@ export function siteUrl(value) {
 export async function call(config, action, input = {}) {
   const site = siteUrl(config.site)
   if (!/^[a-zA-Z0-9-]{1,64}$/.test(config.projectId) || !/^[a-f0-9]{64}$/.test(config.token)) throw new Error('项目或设备配置无效')
-  const body = { ...input, projectId: config.projectId, action, requestId: input.requestId || randomUUID() }
+  const body = { ...input, projectId: config.projectId, action, requestId: input.requestId || randomUUID(), connectionClient: connectionClientProof() }
   const raw = JSON.stringify(body)
   const timestamp = String(Date.now())
   const signature = createHmac('sha256', config.token).update(`${timestamp}\n${raw}`).digest('hex')

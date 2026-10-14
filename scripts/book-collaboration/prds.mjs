@@ -5,7 +5,7 @@ export function isFeishuPrd(url) {
   try {
     const parsed = new URL(url)
     return parsed.protocol === 'https:' && !parsed.username && !parsed.password && !parsed.port && !parsed.search && !parsed.hash &&
-      /^[a-z0-9-]+\.(?:feishu\.cn|larksuite\.com)$/.test(parsed.hostname) && /^\/(?:docx|wiki)\/[a-zA-Z0-9]+$/.test(parsed.pathname)
+      /^(?:[a-z0-9-]+\.)?(?:feishu\.cn|larksuite\.com)$/.test(parsed.hostname) && /^\/(?:docx|wiki)\/[a-zA-Z0-9]+$/.test(parsed.pathname)
   } catch { return false }
 }
 

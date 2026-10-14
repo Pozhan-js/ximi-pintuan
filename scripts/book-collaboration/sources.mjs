@@ -1,8 +1,10 @@
+import { existsSync } from 'node:fs'
 import { readFile, realpath } from 'node:fs/promises'
 import { resolve, sep } from 'node:path'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { sourceGitReader } from './source-git.mjs'
+import { safeTrackedPath } from './project-config.mjs'
 import { isFeishuPrd } from './prds.mjs'
 
 export function sourceDigest(value) {
@@ -24,18 +26,42 @@ export async function scanProject(directory = process.cwd(), options = {}) {
   const tracked = new Set(git('ls-files', '-z').split('\0').filter(Boolean))
   const read = async (path) => {
     if (!tracked.has(path)) throw new Error(`来源尚未跟踪：${path}`)
+    safeTrackedPath(root, path, tracked)
     const actual = await realpath(resolve(root, path))
     if (!actual.startsWith(root + sep)) throw new Error(`来源路径越出仓库：${path}`)
     const data = await readFile(actual, 'utf8')
     if (data.length > 2_000_000) throw new Error(`来源文件过大：${path}`)
     return data
   }
-  const manifest = JSON.parse(await read('version-manifest.json'))
-  if (manifest.project !== options.projectId || !/^v\d+\.\d+\.\d+$/.test(manifest.currentVersion)) throw new Error('当前项目版本登记无效')
-  const version = manifest.currentVersion
-  const current = manifest.versions.find((v) => v.version === version)
-  if (!current) throw new Error('找不到当前版本登记')
+  let manifest, version, current, registrationPath = 'version-manifest.json', openspecRoot = 'openspec/changes', repairsRoot = ''
   const items = [], warnings = []
+  if (tracked.has('version-manifest.json') || existsSync(resolve(root, 'version-manifest.json'))) {
+    manifest = JSON.parse(await read('version-manifest.json'))
+    if (manifest.project !== options.projectId || !/^v\d+\.\d+\.\d+$/.test(manifest.currentVersion)) throw new Error('当前项目版本登记无效')
+    version = manifest.currentVersion
+    current = manifest.versions.find((v) => v.version === version)
+    if (!current) throw new Error('找不到当前版本登记')
+  } else {
+    const config = JSON.parse(await read('deliveryguard.config.json'))
+    if (config.schemaVersion !== 1 || config.project?.id !== options.projectId) throw new Error('DeliveryGuard 项目编号不匹配；请先运行 up --configure-project --site <本站地址> --project <本人个人项目编号>')
+    version = options.currentVersion
+    if (!/^v\d+\.\d+\.\d+$/.test(version || '')) throw new Error('当前项目版本登记无效：缺少服务端当前版本')
+    const safeRelative = (value) => {
+      if (typeof value !== 'string' || !value || value.includes('\\') || value.startsWith('/') || value.split('/').some(p => !p || p === '.' || p === '..')) throw new Error('DeliveryGuard 来源配置路径无效')
+      return value
+    }
+    const versionsRoot = safeRelative(config.paths?.versions)
+    openspecRoot = safeRelative(config.paths?.openspec)
+    repairsRoot = safeRelative(config.paths?.repairs)
+    if (versionsRoot !== '.deliveryguard/versions' || openspecRoot !== 'openspec/changes') throw new Error('暂不支持自定义 DeliveryGuard 来源路径；请使用 .deliveryguard/versions 和 openspec/changes')
+    registrationPath = `${versionsRoot}/${version}.json`
+    const data = JSON.parse(await read(registrationPath))
+    if (data.schemaVersion !== 1 || data.version !== version || !Array.isArray(data.documents)) throw new Error('DeliveryGuard 当前版本登记无效')
+    current = { documents: data.documents.map(doc => ({ ...doc, url: doc.ref })) }
+    manifest = { pendingChanges: [] }
+    // Repair formats are not yet supported; never treat acceptance/release metadata as evidence.
+    if ([...tracked].some(path => path.startsWith(`${repairsRoot}/`))) warnings.push('DeliveryGuard Repair 元数据暂未同步；源状态不代表 CI 或验收通过')
+  }
   const add = (id, kind, title, summary, path, sourceStatus, fileDigest, itemVersion = version, link = '', fix) => items.push({
     key: `${kind.toLowerCase()}:${sourceDigest(id)}`, kind, title: clipped(title, 120), summary: clipped(summary, 2500), version: itemVersion,
     path, link, sourceStatus: clipped(sourceStatus, 120), fileDigest, git: readGit(path, fix, kind === 'REQUIREMENT' ? title : undefined),
@@ -46,8 +72,8 @@ export async function scanProject(directory = process.cwd(), options = {}) {
     if (entry.document && tracked.has(entry.document) && entry.document.startsWith('docs/')) referenceHash = sourceDigest(await read(entry.document))
     else if (entry.document) warnings.push(`登记文档未跟踪或不存在：${entry.document}`)
     add(entry.id || [entry.version, entry.date, entry.document, entry.topic], 'REQUIREMENT', entry.topic,
-      `${entry.note || ''}\n来源文档：${entry.document || '未登记'}\n原始状态仅作参考，规则、范围和验收条件由 Codex 阅读原文后整理。`,
-      'version-manifest.json', entry.status || '', sourceDigest({ entry, referenceHash }))
+      `${entry.note || ''}\n来源文档：${entry.document || '未登记'}\n原始状态仅作参考，规则、范围和验收条件由 AI 工具阅读原文后整理。`,
+      registrationPath, entry.status || '', sourceDigest({ entry, referenceHash }))
   }
   for (const doc of current.documents || []) {
     const internal = typeof doc.url === 'string' && doc.url.startsWith(`/collaboration/${options.projectId}/documents/`) && doc.url.split('/').length === 5 && /^[a-f0-9-]{36}$/.test(doc.url.split('/').at(-1))
@@ -55,7 +81,7 @@ export async function scanProject(directory = process.cwd(), options = {}) {
     if (!internal && !repoDoc && !isFeishuPrd(doc.url)) { warnings.push(`忽略不属于本项目的文档链接：${doc.title}`); continue }
     const localHash = ''
     add([version, doc.url], 'DOCUMENT', doc.title, `文档职责：${doc.type}；登记 revision：${doc.revision ?? '未登记'}。这是项目登记信息，未回读远端文档，不代表最新内容或审核通过。`,
-      'version-manifest.json', `登记 revision ${doc.revision ?? '未知'}`, sourceDigest({ doc, localHash }), version, doc.url)
+      registrationPath, `登记 revision ${doc.revision ?? '未知'}`, sourceDigest({ doc, localHash }), version, doc.url)
   }
   for (const path of [...tracked].sort()) {
     if (/^docs\/repair\/cases\/[^/]+\/case\.json$/.test(path)) {
@@ -65,13 +91,13 @@ export async function scanProject(directory = process.cwd(), options = {}) {
       add(data.id || path, 'BUG', data.title, `${resolution.note ? resolution.note + '\n' : ''}实际：${data.symptom?.actual || '未登记'}\n期望：${data.symptom?.expected || '未登记'}\n修复说明：${data.resolution?.summary || '未登记'}\n源状态不等于公会验收通过。`, path,
         `${resolution.stage} / ${data.status || ''}`, sourceDigest(data), version, '', data.resolution?.kind === 'code' && data.scope?.modules?.length && data.scope.modules.every(p => /^(packages|scripts)\//.test(p)) ? data.resolution.commit : undefined)
     }
-    if (/^openspec\/changes\/[^/]+\/proposal\.md$/.test(path) && !path.includes('/archive/')) {
+    if (path.startsWith(`${openspecRoot}/`) && /^[^/]+\/proposal\.md$/.test(path.slice(openspecRoot.length + 1)) && !path.includes('/archive/')) {
       const proposal = await read(path)
       const taskPath = path.replace('proposal.md', 'tasks.md')
       const tasks = tracked.has(taskPath) ? await read(taskPath) : ''
       const total = (tasks.match(/^\s*- \[[ xX]\]/gm) || []).length
       const done = (tasks.match(/^\s*- \[[xX]\]/gm) || []).length
-      add(path, 'OPENSPEC', path.split('/')[2], `未归档 OpenSpec；任务勾选 ${done}/${total}。版本未显式登记，不自动归入 ${version}，勾选结果不作为审核或 CI 证据。\n${taskPath}`, path,
+      add(path, 'OPENSPEC', path.slice(openspecRoot.length + 1).split('/')[0], `未归档 OpenSpec；任务勾选 ${done}/${total}。版本未显式登记，不自动归入 ${version}，勾选结果不作为审核或 CI 证据。\n${taskPath}`, path,
         `未归档 · ${done}/${total}`, sourceDigest({ proposal, tasks }), '')
     }
   }

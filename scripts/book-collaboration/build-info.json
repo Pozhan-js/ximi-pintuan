@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "bootstrap": {
+    "requirementId": "book-connection-upgrade-v1",
+    "revision": 1,
+    "clientVersion": 2,
+    "buildId": "521fabda3bfd833732fcda2b95a44432658916dd85cf16ced23ea65d971b6b61"
+  },
+  "files": {
+    "scripts/book-collaboration/bootstrap.mjs": "5154f48fb7ecdcfd2ccf9678a865cee0fa512a7b0c2878d795c245561fa4d101",
+    "scripts/book-collaboration/ci.mjs": "2c7ac1a8fce2fcac5a618c8a0f7d040ecf849d5415eab3ea9797587c106dd2e9",
+    "scripts/book-collaboration/cli.mjs": "3c853380740ef1f18a6ead7451339bc0081cf563a6e5c163347ec779af0f4f0b",
+    "scripts/book-collaboration/client.mjs": "a5630b07379e3135006b630076a8e28f58bfed053f39308779ad83b33504728b",
+    "scripts/book-collaboration/heartbeat-process.mjs": "c65fc4cea212ec3b04ec3217739fbde13db4e4aadbdedface337dc8c3ffa7892",
+    "scripts/book-collaboration/heartbeat.mjs": "4e0a8ef1988f23b2d16b7d1301955dbce29ffe52169ecdabc096c8d64a730b6b",
+    "scripts/book-collaboration/hook.mjs": "6abaddbfc600060542117e5424b49981ef42a4d55a90020b69a68989618e6721",
+    "scripts/book-collaboration/install-update-hook.mjs": "a21184d7268e9c906d2c776c1ed671ea8b0b0cf7b7a210a0ce22a36ca0818be0",
+    "scripts/book-collaboration/local.mjs": "27a20b8f891c55c8bf44c5be5825b521fcbd0e7ce7c00146937355739a703268",
+    "scripts/book-collaboration/merge.mjs": "af0e5687d506385879b67cc4c642711f7cf5f69b50e6c724f230d76caf9cf37b",
+    "scripts/book-collaboration/prds.mjs": "707a4b72d58d9fb643f0b9f2c37b1d62f2e4b29b6625ea3e8eec2a94fc633013",
+    "scripts/book-collaboration/project-config.mjs": "adcf8ac1410ca7e2487f18b23aadae2a63764a616d56c91550019f4447977630",
+    "scripts/book-collaboration/source-git.mjs": "e1138e1b0561c86c2046156cc28f8525579f5fdbbc06f2124ac9cfdadc9ff6d4",
+    "scripts/book-collaboration/sources.mjs": "6c7d3caa159e9a822124ca6bf26bacb6b71980396a4720c21a5e88bcfc4fab1b",
+    "scripts/book-collaboration/template-hook.mjs": "6a53c74717c4dcb629fae49c3638d77088ca528fcd05ca14aa43556259a8e46d",
+    "scripts/book-collaboration/updates.mjs": "989269b97f37c80de19814afc5e18238e1d21312514e72379e100d2ea6d07230",
+    "scripts/book-collaboration/vercel-setup.mjs": "a0629eb2b5379e37d00c251e1c716694fd24fef0b2c65161cf51ae5abde62454",
+    ".agents/skills/book-guild/SKILL.md": "07349e30b5ee65acd9d668caf83eaf2a8acc525dfc47c436f567efb21841f9f0",
+    "docs/collaboration/template-updates.md": "4fd21df70253848ce3a0c8fd16289651206fcfc4c0603e11e8ba0081846351d9",
+    "docs/collaboration/connection-upgrade-task.md": "9416044e32854d113a5c334f53ce70cb98a427a72dfe1db56a22cdf2f7bc57b2"
+  }
+}
