@@ -15,8 +15,10 @@ export default function HomePage() {
       <section className="hero" aria-labelledby="welcome-title">
         <p className="eyebrow">从原型开始，把想法做成产品</p>
         <h1 id="welcome-title">你的拼团项目，<br />从这里开始。</h1>
-        <p className="intro">工程已经可以运行。接下来，跟着课程把页面、接口和数据一步步接起来。当前业务功能仍待实现。</p>
+        <p className="intro">工程已经可以运行。接下来，跟着课程把页面、接口和数据一步步接起来。团长可创建、保存并发布拼团。</p>
         <div className="actions">
+          <Link className="button primary" href="/leader">我的拼团</Link>
+          <Link className="button secondary" href="/groups">拼团广场</Link>
           <a className="button primary" href="/prototype/index.html">打开可点击原型 <span aria-hidden="true">↗</span></a>
           <a className="button secondary" href="/api/server-health">查看后端健康检查</a>
         </div>
@@ -40,7 +42,7 @@ export default function HomePage() {
         </article>
       </section>
 
-      <footer>页面、接口、登录、数据库与支付，都将在后续实战中逐步完成。</footer>
+      <footer>已接入团长创建与发布；下单、支付与履约将在后续阶段完成。</footer>
     </main>
   );
 }

@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { readFile } from 'node:fs/promises';
+import { readFile, mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { createRequire } from 'node:module';
 import { createServer } from 'node:net';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -10,6 +12,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const webDir = fileURLToPath(new URL('../packages/web/', import.meta.url));
 const webRequire = createRequire(new URL('../packages/web/package.json', import.meta.url));
 const children = [];
+const temporaryDirectory = await mkdtemp(join(tmpdir(), 'pintuan-smoke-'));
 
 async function unusedPort() {
   const server = createServer();
@@ -87,7 +90,7 @@ try {
   console.log('PASS: Next 独立启动、原型与原文件一致、未启动后端时返回 503');
 
   const server = launch(['packages/server/dist/main.js'], root, {
-    PORT: String(serverPort), HOST: '127.0.0.1',
+    PORT: String(serverPort), HOST: '127.0.0.1', PINTUAN_DB_PATH: join(temporaryDirectory, 'smoke.sqlite'),
   });
   await waitReady(`${serverUrl}/health`, server);
   const expected = { status: 'ok', service: 'pintuan-server' };
@@ -102,4 +105,5 @@ try {
   console.log('PASS: 后端停止后返回 503，不复用旧的成功结果');
 } finally {
   await Promise.all(children.map(stop));
+  await rm(temporaryDirectory, { recursive: true, force: true });
 }

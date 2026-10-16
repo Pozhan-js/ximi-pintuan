@@ -11,3 +11,5 @@ export function isHealthResponse(value: unknown): value is HealthResponse {
     && 'status' in value && value.status === 'ok'
     && 'service' in value && value.service === 'pintuan-server';
 }
+
+export * from './group';

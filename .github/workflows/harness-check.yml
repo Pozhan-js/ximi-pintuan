@@ -41,6 +41,8 @@ jobs:
         run: pnpm build
       - name: HTTP 冒烟测试
         run: pnpm test:smoke
+      - name: 团长创建发布与权限回归
+        run: node --test tests/pintuan-store.test.mjs tests/pintuan-http.test.mjs
       - name: DeliveryGuard 检查
         run: pnpm check
       - name: 记录检查提交

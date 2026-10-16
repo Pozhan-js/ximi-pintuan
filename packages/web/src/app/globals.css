@@ -55,3 +55,55 @@ footer { padding: 32px 0; margin-top: 32px; border-top: 1px solid var(--border);
   .stage { padding: 24px; }
   footer { margin-top: 24px; }
 }
+
+.pintuan-shell { max-width: 520px; margin: 0 auto; padding: 0 20px 130px; overflow-wrap: anywhere; }
+.pintuan-header { padding: 22px 0 16px; display: flex; align-items: center; justify-content: space-between; }
+.pintuan-nav { display: flex; gap: 24px; padding: 12px 0; border-block: 1px solid var(--border); font-size: 14px; }
+.pintuan-nav a { text-decoration: none; font-weight: 600; }
+.pintuan-shell h1 { font-size: 28px; letter-spacing: -.5px; margin: 20px 0 12px; }
+.pintuan-shell h2 { font-size: 18px; margin: 12px 0; }
+.pintuan-shell .muted { font-size: 13px; color: var(--muted); }
+.section-heading, .account-line, .spec-summary, .editor-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.account-line { padding-top: 14px; font-size: 12px; }
+.group-card { padding: 20px; margin: 18px 0; border: 1px solid var(--border); border-radius: 16px; background: #fffefb; }
+.group-field { margin: 18px 0; }
+.group-field label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 7px; }
+.pintuan-shell input, .pintuan-shell textarea { width: 100%; min-width: 0; padding: 12px; font: inherit; color: var(--ink); border: 1px solid var(--border); border-radius: 9px; background: white; scroll-margin: 100px; }
+.pintuan-shell textarea { min-height: 110px; resize: vertical; }
+.pintuan-shell input[type=file] { font-size: 12px; }
+.pintuan-shell input[aria-invalid=true], .pintuan-shell textarea[aria-invalid=true] { border-color: #b53823; }
+.pintuan-shell button { font: inherit; cursor: pointer; }
+.pintuan-shell button:disabled { cursor: not-allowed; opacity: .55; }
+.pintuan-shell :focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+.editor { border: 0; padding: 0; margin: 0; min-width: 0; }
+.field-error { color: #a52f20; font-size: 12px; margin: 6px 0; }
+.notice { padding: 14px; border-radius: 10px; background: #f5e8d6; font-size: 13px; }
+.notice p { margin: 0 0 8px; }
+.success-notice { background: #e8f2e5; color: #315e36; }
+.failure { background: #fff0e9; color: #a53624; }
+.text-button { border: 0; background: transparent; color: var(--orange); padding: 8px 0; min-height: 44px; text-align: left; }
+.text-button.danger { color: #a52f20; }
+.full { width: 100%; margin-top: 10px; }
+.group-tabs { display: flex; gap: 5px; margin-top: 20px; }
+.group-tabs button { flex: 1; border: 0; border-radius: 8px; background: transparent; color: var(--muted); padding: 10px 4px; font-size: 13px; }
+.group-tabs button[aria-pressed=true] { background: var(--orange); color: white; }
+.empty-state { padding: 40px 0; text-align: center; color: var(--muted); }
+.spec-editor { padding: 6px 0 20px; border-bottom: 1px solid var(--border); }
+.price-stock { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.price-stock .group-field { min-width: 0; margin: 0; }
+.spec-summary { padding: 14px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+.spec-summary span { flex-shrink: 0; font-size: 13px; }
+.amount { color: var(--orange); font-variant-numeric: tabular-nums; }
+.product-cover { display: block; width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 12px; }
+.product-description { white-space: pre-wrap; font-size: 14px; }
+.group-rules { display: grid; grid-template-columns: auto 1fr; gap: 12px; font-size: 13px; }
+.group-rules dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.upload-preview { display: flex; align-items: center; gap: 12px; margin: 10px 0; font-size: 12px; }
+.upload-preview img { width: 76px; height: 76px; border-radius: 9px; object-fit: cover; }
+.group-footer { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: min(100%, 520px); padding: 14px 20px max(18px, env(safe-area-inset-bottom)); background: #fffaf2; border-top: 1px solid var(--border); display: flex; gap: 10px; z-index: 2; }
+.group-footer > * { flex: 1; margin: 0; min-width: 0; }
+.group-footer button, .group-footer a { font-size: 14px; }
+.group-dialog { width: min(90%, 420px); padding: 25px; color: var(--ink); border: 1px solid var(--border); border-radius: 16px; background: #fffefb; }
+.group-dialog::backdrop { background: #34291f70; }
+.group-dialog p { font-size: 14px; }
+@media (max-width: 390px) { .pintuan-shell { padding-inline: 16px; } .group-card { padding: 16px; } .price-stock { gap: 10px; } .group-field label { font-size: 13px; } }
