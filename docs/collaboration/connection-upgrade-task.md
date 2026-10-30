@@ -19,6 +19,12 @@ Codex、Cursor、Claude Code、GLM 及其他 AI Agent 均可使用，不设置�
 
 如果连接工具文件已受 Git 跟踪，升级会留下工具代码差异。任务0完成只确认本机接入，不代表这些差异已经审核、提交或推送。不要把工具更新混入原作业的修改范围，也不放宽原有干净工作区检查。按已有授权单独登记工程维护变更，明确工具、Skill、实际 Hook 和说明的范围，提交候选并由教师审核后再授权提交；原业务改动保留并分别处理。没有登记或 Git 操作授权时先说明待处理项。原作业最终交付仍须符合原合同与干净工作区要求。
 
+## Windows 飞书 CLI 兼容修复（2026-10-16）
+
+Windows 读取飞书 PRD 时，课程连接工具会在 PATH 各目录下查找 `node_modules/@larksuite/cli/scripts/run.js`，再用当前 Node 直接执行该入口，避免调用 npm 生成的 `.cmd`。不启用 shell；macOS/Linux 仍执行 `lark-cli`。本人 `--profile`、`--as user` 和真实 revision 校验保持不变，读取失败不会回退站内副本。
+
+Windows 学员请下载本站新版安装包，按上述步骤安全更新工具后重新执行 `up → read-upgrade-rules → complete-upgrade --rules-read`，用 `upgrade-status` 确认 COMPLETE，再运行 `read-prds --profile <本人配置>` 或 `bind <CHG-ID> --profile <本人配置>`。原作业、审核和交付记录保留，不需要私改核心文件或使用临时 helper 绕过门禁。找不到入口时，安装 `npm install -g @larksuite/cli`，核对全局安装目录已加入 PATH 并重启终端。网站门禁与下载包必须在同次发布中更新。
+
 ## 状态与边界
 
 - NEEDS_UPGRADE：尚未收到符合要求的工具运行报告。
